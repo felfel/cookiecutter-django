@@ -5,5 +5,14 @@ set -o pipefail
 set -o nounset
 
 
+python /app/manage.py migrate --no-input --settings=config.settings.production
 python /app/manage.py collectstatic --noinput
-/usr/local/bin/gunicorn config.wsgi --bind 0.0.0.0:5000 --chdir=/app
+/usr/local/bin/gunicorn config.wsgi \
+	--workers 3 \
+	--worker-class gevent \
+	--bind=0.0.0.0:5000 \
+  	--timeout 600 \
+	--log-config='../gunicorn-logging.conf' \
+	--max-requests 1000 \
+	--max-requests-jitter 4 \
+ 	--chdir=/app

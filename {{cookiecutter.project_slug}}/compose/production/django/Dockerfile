@@ -24,6 +24,10 @@ RUN sed -i 's/\r//' /entrypoint
 RUN chmod +x /entrypoint
 RUN chown django /entrypoint
 
+COPY ./compose/production/django/gunicorn-logging.conf /gunicorn-logging.conf
+RUN sed -i 's/\r//' /gunicorn-logging.conf
+RUN chown django /gunicorn-logging.conf
+
 COPY ./compose/production/django/start /start
 RUN sed -i 's/\r//' /start
 RUN chmod +x /start
@@ -46,6 +50,9 @@ RUN chmod +x /start-flower
 COPY . /app
 
 RUN chown -R django /app
+
+RUN chgrp -R 0 /app && \
+    chmod -R g=u /app
 
 USER django
 
