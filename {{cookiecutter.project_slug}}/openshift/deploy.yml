@@ -1,0 +1,151 @@
+---
+apiVersion: v1
+kind: Template
+
+parameters:
+  - name: APP
+    required: true
+  - name: VERSION
+    required: true
+
+metadata:
+  name: "${APP}-deploy"
+
+objects:
+- apiVersion: v1
+  kind: Service
+  metadata:
+    name: "${APP}"
+    labels:
+      app: "${APP}"
+      template: "${APP}-deploy"
+  spec:
+    ports:
+    - name: django
+      port: 5000
+    selector:
+      app: "${APP}"
+      deploymentconfig: "${APP}-django"
+    type: ClusterIP
+
+- apiVersion: v1
+  kind: DeploymentConfig
+  metadata:
+    name: "${APP}-django"
+    labels:
+      app: "${APP}"
+      template: "${APP}-deploy"
+  spec:
+    selector:
+      app: "${APP}"
+      deploymentconfig: "${APP}-django"
+    replicas: 2
+    template:
+      metadata:
+        labels:
+          app: "${APP}"
+          deploymentconfig: "${APP}-django"
+      spec:
+        containers:
+        - name: "${APP}-django"
+          args:
+          - /start
+          envFrom:
+          - secretRef:
+              name: "${APP}"
+          image: "namak/${APP}:${VERSION}"
+          imagePullPolicy: Always
+          ports:
+          - containerPort: 5000
+            protocol: TCP
+          readinessProbe:
+            failureThreshold: 5
+            httpGet:
+              path: /
+              port: 5000
+              scheme: HTTP
+            initialDelaySeconds: 120
+            periodSeconds: 30
+            successThreshold: 1
+            timeoutSeconds: 1
+          resources:
+            requests:
+              cpu: 250m
+              memory: 256Mi
+            limits:
+              cpu: 500m
+              memory: 512Mi
+    strategy:
+      type: Rolling
+      rollingParams:
+        timeoutSeconds: 600
+        maxSurge: "100%"
+    triggers: []
+
+{% if cookiecutter.use_celery == "y" %}
+- apiVersion: v1
+  kind: DeploymentConfig
+  metadata:
+    name: "${APP}-beat"
+    labels:
+      app: "${APP}"
+      template: "${APP}-deploy"
+  spec:
+    selector:
+      app: "${APP}"
+      deploymentconfig: "${APP}-beat"
+    replicas: 1
+    template:
+      metadata:
+        labels:
+          deploymentconfig: "${APP}-beat"
+          app: "${APP}"
+      spec:
+        containers:
+        - name: "${APP}-beat"
+          args:
+          - /start-celerybeat.sh
+          envFrom:
+          - secretRef:
+              name: "${APP}"
+          image: "namak/${APP}:${VERSION}"
+          imagePullPolicy: Always
+          resources:
+            limits:
+              cpu: 250m
+              memory: 256Mi
+    triggers: []
+
+- apiVersion: v1
+  kind: DeploymentConfig
+  metadata:
+    name: "${APP}-worker"
+    labels:
+      app: "${APP}"
+      template: "${APP}-deploy"
+  spec:
+    selector:
+      deploymentconfig: "${APP}-worker"
+      app: "${APP}"
+    replicas: 1
+    template:
+      metadata:
+        labels:
+          deploymentconfig: "${APP}-worker"
+          app: "${APP}"
+      spec:
+        containers:
+        - name: "${APP}-worker"
+          args:
+          - /start-celeryworker.sh
+          envFrom:
+          - secretRef:
+              name: "${APP}"
+          image: "namak/${APP}:${VERSION}"
+          imagePullPolicy: Always
+          resources:
+            limits:
+              cpu: 250m
+              memory: 512Mi
+    triggers: []
+{% endif %}

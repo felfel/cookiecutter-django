@@ -1,0 +1,79 @@
+---
+image: python:3.6
+
+pipelines:
+  default:
+    - step:
+        name: Run unit tests
+        caches:
+          - pip
+        script:
+          - pip install -r requirements/test.txt
+          - py.test -v --cov
+
+  branches:
+    develop:
+      - step:
+          name: Run unit tests
+          caches:
+            - pip
+          script:
+            - pip install -r requirements/test.txt
+            - py.test -v --cov
+
+      - step:
+          name: Build image and push to Docker
+          script:
+            - export VERSION="dev"
+            - docker login -u $DOCKER_USER -p $DOCKER_PASSWORD
+            - docker build -f ./compose/production/django/Dockerfile -t namak/$BITBUCKET_REPO_SLUG:$VERSION .
+            - docker push namak/$BITBUCKET_REPO_SLUG:$VERSION
+
+      - step:
+          name: Deploy to OpenShift
+          image: namak/openshift-cli:3.6
+          script:
+            - export
+                APP="$BITBUCKET_REPO_SLUG"  # defaults app name to repo slug
+                VERSION="dev"
+            - oc login "$OPENSHIFT_URL" --token="$OPENSHIFT_TOKEN"
+            - oc project "$OPENSHIFT_PROJECT_DEVELOP"
+            - oc process -f openshift/deploy.yml
+                -p APP="$APP"
+                -p VERSION="$VERSION"
+              | oc apply -f -
+            - ./openshift/rollout.sh "${APP}"
+
+    master:
+      - step:
+          name: Run unit tests
+          caches:
+            - pip
+          script:
+            - pip install -r requirements/test.txt
+            - py.test
+      - step:
+          name: Build image and push to Docker
+          script:
+            - export VERSION=$(python3 get_version.py)
+            - docker login -u $DOCKER_USER -p $DOCKER_PASSWORD
+            - docker build -f ./compose/production/django/Dockerfile -t namak/$BITBUCKET_REPO_SLUG:$VERSION .
+            - docker push namak/$BITBUCKET_REPO_SLUG:$VERSION
+
+      - step:
+          name: Deploy to OpenShift
+          image: namak/openshift-cli:3.6
+          script:
+            - export
+                APP="$BITBUCKET_REPO_SLUG"  # defaults app name to repo slug
+                VERSION=$(python3 get_version.py)
+            - oc login "$OPENSHIFT_URL" --token="$OPENSHIFT_TOKEN"
+            - oc project "$OPENSHIFT_PROJECT_PROD"
+            - oc process -f openshift/deploy.yml
+                -p APP="$APP"
+                -p VERSION="$VERSION"
+              | oc apply -f -
+            - ./openshift/rollout.sh "${APP}"
+
+options:
+  docker: true
