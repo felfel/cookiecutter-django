@@ -5,8 +5,16 @@ from django.contrib import admin
 from django.views.generic import TemplateView
 from django.views import defaults as default_views
 
+from {{ cookiecutter.project_slug }} import __version__
+
 urlpatterns = [
-    path("", TemplateView.as_view(template_name="pages/home.html"), name="home"),
+    path(
+        "",
+        TemplateView.as_view(
+            template_name="pages/home.html",
+            extra_context={"version_number": __version__}
+        ),
+        name="home"),
     path(
         "about/",
         TemplateView.as_view(template_name="pages/about.html"),
@@ -14,12 +22,6 @@ urlpatterns = [
     ),
     # Django Admin, use {% raw %}{% url 'admin:index' %}{% endraw %}
     path(settings.ADMIN_URL, admin.site.urls),
-    # User management
-    path(
-        "users/",
-        include("{{ cookiecutter.project_slug }}.users.urls", namespace="users"),
-    ),
-    path("accounts/", include("allauth.urls")),
     # Your stuff: custom urls includes go here
 ] + static(
     settings.MEDIA_URL, document_root=settings.MEDIA_ROOT
