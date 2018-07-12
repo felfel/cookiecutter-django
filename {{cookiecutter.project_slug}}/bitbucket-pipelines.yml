@@ -8,7 +8,7 @@ pipelines:
         caches:
           - pip
         script:
-          - pip install -r requirements/test.txt
+          - pip install -r requirements/local.txt
           - py.test -v --cov
 
   branches:
@@ -18,7 +18,7 @@ pipelines:
           caches:
             - pip
           script:
-            - pip install -r requirements/test.txt
+            - pip install -r requirements/local.txt
             - py.test -v --cov
 
       - step:
@@ -51,7 +51,7 @@ pipelines:
           caches:
             - pip
           script:
-            - pip install -r requirements/test.txt
+            - pip install -r requirements/local.txt
             - py.test
       - step:
           name: Build image and push to Docker
