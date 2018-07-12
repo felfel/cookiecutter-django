@@ -33,8 +33,9 @@ pipelines:
           name: Deploy to OpenShift
           image: namak/openshift-cli:3.6
           script:
+            # defaults app name to repo slug
             - export
-                APP="$BITBUCKET_REPO_SLUG"  # defaults app name to repo slug
+                APP="$BITBUCKET_REPO_SLUG"
                 VERSION="dev"
             - oc login "$OPENSHIFT_URL" --token="$OPENSHIFT_TOKEN"
             - oc project "$OPENSHIFT_PROJECT_DEVELOP"
@@ -64,8 +65,9 @@ pipelines:
           name: Deploy to OpenShift
           image: namak/openshift-cli:3.6
           script:
+            # defaults app name to repo slug
             - export
-                APP="$BITBUCKET_REPO_SLUG"  # defaults app name to repo slug
+                APP="$BITBUCKET_REPO_SLUG"
                 VERSION=$(python3 get_version.py)
             - oc login "$OPENSHIFT_URL" --token="$OPENSHIFT_TOKEN"
             - oc project "$OPENSHIFT_PROJECT_PROD"
