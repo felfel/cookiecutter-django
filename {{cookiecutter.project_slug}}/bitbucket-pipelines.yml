@@ -44,7 +44,7 @@ pipelines:
               | oc apply -f -
             - ./openshift/rollout.sh "${APP}"
 
-    master:
+    release:
       - step:
           name: Run unit tests
           caches:
