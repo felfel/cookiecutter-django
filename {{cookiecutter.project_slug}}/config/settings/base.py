@@ -245,3 +245,26 @@ STATICFILES_FINDERS += ['compressor.finders.CompressorFinder']
 {%- endif %}
 # Your stuff...
 # ------------------------------------------------------------------------------
+# some of the default settings for namak library, uncomment to use them
+
+# NAMAK = {
+#     'AUTHENTICATION': {
+#         'REALM': env('AUTH_PUBLIC_REALM', default='API'),
+#         'SERVICE_REALM': env('AUTH_SERVICE_REALM', default='namak'),
+#         'SERVICE_CLIENT_ID': env('AUTH_SERVICE_CLIENT_ID', default='namak-service'),
+#         'SERVICE_CLIENT_SECRET': env('AUTH_SERVICE_CLIENT_SECRET', default='00000000-0000-0000-0000-000000000000'),
+#         'BASE_URL': env('AUTH_HOST', default='https://api-dev.felfel.ch/auth'),
+#         'AUTH_REALMS': env.list('AUTH_REALMS', default=['API', 'namak'])
+#     }
+# }
+
+# REST_FRAMEWORK = {
+#     'DEFAULT_AUTHENTICATION_CLASSES': (
+#         'namak.auth.django_rest.authentication.JwtAuthentication',
+#         'rest_framework.authentication.SessionAuthentication',
+#     ),
+#     'DEFAULT_PERMISSION_CLASSES': (
+#         'namak.auth.django_rest.permissions.IsAuthenticatedOrOptions',
+#     ),
+#     'EXCEPTION_HANDLER': 'namak.exceptions.django_rest.exception_handler'
+# }
