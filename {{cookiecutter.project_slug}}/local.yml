@@ -7,6 +7,8 @@ volumes:
 services:
   django:{% if cookiecutter.use_celery == 'y' %} &django{% endif %}
     build:
+      args: 
+        PIP_EXTRA_INDEX_URL: ${PIP_EXTRA_INDEX_URL}
       context: .
       dockerfile: ./compose/local/django/Dockerfile
     image: {{ cookiecutter.project_slug }}_local_django

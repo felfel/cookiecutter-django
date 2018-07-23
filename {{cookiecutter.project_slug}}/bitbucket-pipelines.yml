@@ -26,7 +26,7 @@ pipelines:
           script:
             - export VERSION="dev"
             - docker login -u $DOCKER_USER -p $DOCKER_PASSWORD
-            - docker build -f ./compose/production/django/Dockerfile -t namak/$BITBUCKET_REPO_SLUG:$VERSION .
+            - docker build -f ./compose/production/django/Dockerfile -t namak/$BITBUCKET_REPO_SLUG:$VERSION --build-arg PIP_EXTRA_INDEX_URL=$PIP_EXTRA_INDEX_URL .
             - docker push namak/$BITBUCKET_REPO_SLUG:$VERSION
 
       - step:
@@ -58,7 +58,7 @@ pipelines:
           script:
             - export VERSION=$(python3 get_version.py)
             - docker login -u $DOCKER_USER -p $DOCKER_PASSWORD
-            - docker build -f ./compose/production/django/Dockerfile -t namak/$BITBUCKET_REPO_SLUG:$VERSION .
+            - docker build -f ./compose/production/django/Dockerfile -t namak/$BITBUCKET_REPO_SLUG:$VERSION --build-arg PIP_EXTRA_INDEX_URL=$PIP_EXTRA_INDEX_URL .
             - docker push namak/$BITBUCKET_REPO_SLUG:$VERSION
 
       - step:

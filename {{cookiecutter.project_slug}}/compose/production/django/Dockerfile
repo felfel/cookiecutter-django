@@ -1,3 +1,11 @@
+FROM python:3.6-alpine as intermediate
+
+ARG PIP_EXTRA_INDEX_URL
+COPY ./requirements /requirements
+WORKDIR /pip-packages/
+RUN apk update && apk add --virtual build-deps gcc postgresql-dev
+RUN pip download -r /requirements/production.txt
+
 FROM python:3.6-alpine
 
 ENV PYTHONUNBUFFERED 1
@@ -15,16 +23,17 @@ RUN addgroup -S django \
     && adduser -S -G django django
 
 # Requirements are installed here to ensure they will be cached.
-COPY ./requirements /requirements
-RUN pip install --no-cache-dir -r /requirements/production.txt \
-    && rm -rf /requirements
+# Installing from intermediate in order to obfuscate PIP_EXTRA_INDEX_URL
+COPY --from=intermediate /pip-packages/ /pip-packages/
+RUN pip install --no-cache-dir --no-index --find-links=/pip-packages/ /pip-packages/* \
+    && rm -rf /pip-packages/
 
 COPY ./compose/production/django/entrypoint /entrypoint
 RUN sed -i 's/\r//' /entrypoint
 RUN chmod +x /entrypoint
 RUN chown django /entrypoint
 
-COPY ./compose/production/django/gunicorn-logging.conf /gunicorn-logging.conf
+COPY ./compose/production/django/gunicorn_logging.conf /gunicorn-logging.conf
 RUN sed -i 's/\r//' /gunicorn-logging.conf
 RUN chown django /gunicorn-logging.conf
 

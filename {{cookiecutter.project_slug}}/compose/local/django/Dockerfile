@@ -1,5 +1,6 @@
 FROM python:3.6-alpine
 
+ARG PIP_EXTRA_INDEX_URL
 ENV PYTHONUNBUFFERED 1
 
 RUN apk update \
