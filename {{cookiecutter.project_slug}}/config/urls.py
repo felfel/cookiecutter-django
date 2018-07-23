@@ -52,3 +52,6 @@ if settings.DEBUG:
         import debug_toolbar
 
         urlpatterns = [path("__debug__/", include(debug_toolbar.urls))] + urlpatterns
+
+handler404 = 'namak_warehouses.utils.django_handler_404'
+handler500 = 'namak_warehouses.utils.django_handler_500'
