@@ -28,7 +28,7 @@ urlpatterns = [
 
     # example module with hello-world view
     path("example", include('{{cookiecutter.project_slug}}.example_module.urls', namespace='example-module'))
-    
+
     # Your stuff: custom urls includes go here
 
 ] + static(
