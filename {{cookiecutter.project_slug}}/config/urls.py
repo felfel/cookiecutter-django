@@ -22,7 +22,15 @@ urlpatterns = [
     ),
     # Django Admin, use {% raw %}{% url 'admin:index' %}{% endraw %}
     path(settings.ADMIN_URL, admin.site.urls),
+
+    # if we want to enable login on web resf_framework interface
+    path("drf_auth/", include('rest_framework.urls', namespace='rest-framework')),
+
+    # example module with hello-world view
+    path("example", include('{{cookiecutter.project_slug}}.example_module.urls', namespace='example-module'))
+    
     # Your stuff: custom urls includes go here
+
 ] + static(
     settings.MEDIA_URL, document_root=settings.MEDIA_ROOT
 )

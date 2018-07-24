@@ -71,6 +71,8 @@ THIRD_PARTY_APPS = [
     'rest_framework',
 ]
 LOCAL_APPS = [
+    # Example Module with hello world view, please remove if not needed
+    '{{ cookiecutter.project_slug }}.example_module.apps.ExampleModuleConfig'
     # Your stuff: custom apps go here
 ]
 # https://docs.djangoproject.com/en/dev/ref/settings/#installed-apps
