@@ -13,6 +13,7 @@ python /app/manage.py collectstatic --noinput
 	--bind=0.0.0.0:5000 \
   	--timeout 600 \
 	--log-config='../gunicorn-logging.conf' \
+	--access-logformat='%(h)s %(l)s %({Forwarded}i)s %(l)s %(r)s %(s)s %(b)s %(f)s %(a)s' \
 	--max-requests 1000 \
 	--max-requests-jitter 4 \
  	--chdir=/app
