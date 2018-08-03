@@ -87,6 +87,9 @@ AWS_S3_OBJECT_PARAMETERS = {
     'CacheControl': f'max-age={_AWS_EXPIRY}, s-maxage={_AWS_EXPIRY}, must-revalidate',
 }
 
+AWS_AUTO_CREATE_BUCKET = True
+AWS_S3_REGION_NAME = env('DJANGO_AWS_S3_REGION_NAME', default='eu-central-1')
+
 # STATIC
 # ------------------------
 {% if cookiecutter.use_whitenoise == 'y' -%}
