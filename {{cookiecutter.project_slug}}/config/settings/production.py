@@ -199,7 +199,7 @@ SENTRY_DSN = env('SENTRY_DSN')
 SENTRY_CLIENT = env('DJANGO_SENTRY_CLIENT', default='raven.contrib.django.raven_compat.DjangoClient')
 LOGGING = {
     'version': 1,
-    'disable_existing_loggers': True,
+    'disable_existing_loggers': False,
     'root': {
         'level': 'WARNING',
         'handlers': ['sentry'],
@@ -209,6 +209,9 @@ LOGGING = {
             'format': '%(levelname)s %(asctime)s %(module)s '
                       '%(process)d %(thread)d %(message)s'
         },
+        'json-namak': {
+            '()': 'loggingpy.log.JsonFormatter'
+        }
     },
     'handlers': {
         'sentry': {
@@ -220,8 +223,20 @@ LOGGING = {
             'class': 'logging.StreamHandler',
             'formatter': 'verbose'
         }
+        # #  define namak handlers to log sinks here
+        # 'namak-log-sink': {
+        #     'level': 'DEBUG',
+        #     'class': 'loggingpy.BundlingHttpSink',
+        #     'formatter': 'json-namak',
+        #     'url': 'https://log-end.point'
+        # }
     },
     'loggers': {
+        # 'namak': {
+        #     'level': 'DEBUG',
+        #     'handlers': ['namak-log-sink'],
+        #     'propagate': False,
+        # },
         'django.db.backends': {
             'level': 'ERROR',
             'handlers': ['console'],

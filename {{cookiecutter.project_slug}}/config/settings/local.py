@@ -84,3 +84,43 @@ CELERY_TASK_EAGER_PROPAGATES = True
 {%- endif %}
 # Your stuff...
 # ------------------------------------------------------------------------------
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'root': {
+        'level': 'DEBUG',
+        'handlers': ['console'],
+    },
+    'formatters': {
+        'verbose': {
+            'format': '%(levelname)s %(asctime)s %(process)d %(thread)d %(module)s %(name)s %(lineno)d %(message)s'
+        },
+        'json-namak': {
+            '()': 'loggingpy.log.JsonFormatter'
+        }
+    },
+    'handlers': {
+        'console': {
+            'level': 'DEBUG',
+            'class': 'logging.StreamHandler',
+            'formatter': 'verbose'
+        },
+        'console-json': {
+            'level': 'DEBUG',
+            'class': 'logging.StreamHandler',
+            'formatter': 'json-namak'
+        }
+    },
+    'loggers': {
+        'django.db.backends': {
+            'level': 'ERROR',
+            'handlers': ['console'],
+            'propagate': False,
+        },
+        'namak': {
+            'level': 'DEBUG',
+            'handlers': ['console-json', ],
+            'propagate': False,
+        },
+    }
+}
