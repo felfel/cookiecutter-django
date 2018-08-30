@@ -23,6 +23,6 @@ class TimeStampedModel(TimeStampedCreateOnlyModel):
 class Example(TimeStampedModel):
 
     class Meta:
-        db_name = 'example_module_example'
+        db_table = 'example_module_example'
 
     id = models.UUIDField(primary_key=True, editable=False, default=uuid.uuid4)
