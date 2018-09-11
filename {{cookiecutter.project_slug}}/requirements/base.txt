@@ -33,8 +33,8 @@ coreapi==2.3.3  # https://github.com/core-api/python-client
 # Logging
 # --------------------------
 python-json-logger==0.1.9  # https://github.com/madzak/python-json-logger
-logging-py==0.3.11  # https://github.com/felfel/logging-py
+logging-py==0.3.13  # https://github.com/felfel/logging-py
 
 # Namak
 # ------------------------------------------------------------------------------
-namak==0.2.2
+namak==0.3.2
