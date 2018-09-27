@@ -31,6 +31,7 @@ pipelines:
 
       - step:
           name: Deploy to OpenShift
+          deployment: staging
           image: namak/openshift-cli:3.6
           script:
             # defaults app name to repo slug
@@ -63,6 +64,7 @@ pipelines:
 
       - step:
           name: Deploy to OpenShift
+          deployment: production
           image: namak/openshift-cli:3.6
           script:
             # defaults app name to repo slug
