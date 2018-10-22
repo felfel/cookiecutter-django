@@ -203,14 +203,10 @@ SENTRY_CLIENT = env('DJANGO_SENTRY_CLIENT', default='raven.contrib.django.raven_
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
-    'root': {
-        'level': 'WARNING',
-        'handlers': ['sentry'],
-    },
     'formatters': {
         'verbose': {
-            'format': '%(levelname)s %(asctime)s %(module)s '
-                      '%(process)d %(thread)d %(message)s'
+            'format': '%(levelname)s %(asctime)s %(process)d %(thread)d '
+                      '%(module)s %(name)s %(lineno)d %(message)s'
         },
         'json-namak': {
             '()': 'loggingpy.log.JsonFormatter'
@@ -234,12 +230,16 @@ LOGGING = {
         #     'url': 'https://log-end.point'
         # }
     },
+    'root': {
+        'level': 'INFO',
+        'handlers': ['console', 'sentry'],
+    },
     'loggers': {
-        # 'namak': {
-        #     'level': 'DEBUG',
-        #     'handlers': ['namak-log-sink'],
-        #     'propagate': False,
-        # },
+        'gunicorn': {
+            'level': 'DEBUG',
+            'handlers': ['console'],
+            'propagate': False,
+        },
         'django.db.backends': {
             'level': 'ERROR',
             'handlers': ['console'],
