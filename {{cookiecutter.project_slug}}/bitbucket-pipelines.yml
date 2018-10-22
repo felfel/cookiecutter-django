@@ -15,6 +15,8 @@ pipelines:
     develop:
       - step:
           name: Run unit tests
+          services:
+            - postgres
           caches:
             - pip
           script:
@@ -23,6 +25,10 @@ pipelines:
 
       - step:
           name: Build image and push to Docker
+          services:
+            - docker
+          caches:
+            - docker
           script:
             - export VERSION="dev"
             - docker login -u $DOCKER_USER -p $DOCKER_PASSWORD
@@ -31,7 +37,7 @@ pipelines:
 
       - step:
           name: Deploy to OpenShift
-          deployment: staging
+          deployment: test
           image: namak/openshift-cli:3.6
           script:
             # defaults app name to repo slug
@@ -49,6 +55,8 @@ pipelines:
     release:
       - step:
           name: Run unit tests
+          services:
+            - postgres
           caches:
             - pip
           script:
@@ -56,6 +64,10 @@ pipelines:
             - py.test
       - step:
           name: Build image and push to Docker
+          services:
+            - docker
+          caches:
+            - docker
           script:
             - export VERSION=$(python3 get_version.py)
             - docker login -u $DOCKER_USER -p $DOCKER_PASSWORD
@@ -79,5 +91,11 @@ pipelines:
               | oc apply -f -
             - ./openshift/rollout.sh "${APP}"
 
-options:
-  docker: true
+definitions: 
+  services: 
+    postgres: 
+      image: postgres
+      environment: 
+        POSTGRES_DB: $POSTGRES_DB
+        POSTGRES_USER: $POSTGRES_DB
+        POSTGRES_PASSWORD: $POSTGRES_DB

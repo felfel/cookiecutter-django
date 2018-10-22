@@ -8,12 +8,6 @@ set -o nounset
 python /app/manage.py migrate --no-input --settings=config.settings.production
 python /app/manage.py collectstatic --noinput
 /usr/local/bin/gunicorn config.wsgi \
-	--workers 3 \
-	--worker-class gevent \
-	--bind=0.0.0.0:5000 \
-  	--timeout 600 \
-	--log-config='../gunicorn-logging.conf' \
-	--access-logformat='%(h)s %(l)s %({Forwarded}i)s %(l)s %(r)s %(s)s %(b)s %(f)s %(a)s' \
-	--max-requests 1000 \
-	--max-requests-jitter 4 \
+	--config='../gunicorn_config.py' \
+	--log-config='../gunicorn_logging.conf' \
  	--chdir=/app

@@ -25,9 +25,13 @@ RUN sed -i 's/\r//' /entrypoint
 RUN chmod +x /entrypoint
 RUN chown django /entrypoint
 
-COPY ./compose/production/django/gunicorn_logging.conf /gunicorn-logging.conf
-RUN sed -i 's/\r//' /gunicorn-logging.conf
-RUN chown django /gunicorn-logging.conf
+COPY ./compose/production/django/gunicorn_logging.conf /gunicorn_logging.conf
+RUN sed -i 's/\r//' /gunicorn_logging.conf
+RUN chown django /gunicorn_logging.conf
+
+COPY ./compose/production/django/gunicorn_config.py /gunicorn_config.py
+RUN sed -i 's/\r//' /gunicorn_config.py
+RUN chown django /gunicorn_config.py
 
 COPY ./compose/production/django/start /start
 RUN sed -i 's/\r//' /start

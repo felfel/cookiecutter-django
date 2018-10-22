@@ -36,7 +36,7 @@ objects:
       app: "${APP}"
       template: "${APP}-deploy"
   spec:
-    revisionHistoryLimit: 5
+    revisionHistoryLimit: 3
     selector:
       app: "${APP}"
       deploymentconfig: "${APP}-django"
