@@ -21,6 +21,9 @@ ALLOWED_HOSTS += [gethostbyname(gethostname()), ]
 DATABASES['default'] = env.db('DATABASE_URL')  # noqa F405
 DATABASES['default']['ENGINE'] = 'django_db_geventpool.backends.postgresql_psycopg2'  # noqa F405
 DATABASES['default']['CONN_MAX_AGE'] = env.int('CONN_MAX_AGE', default=0)  # noqa F405
+DATABASES['default']['ATOMIC_REQUESTS'] = False  # noqa F405
+# MAX CONNS needs to be set if using threadpool, otherwise deadlock
+DATABASES['default']['OPTIONS'] = { 'MAX_CONNS': 15 }  # noqa F405
 
 
 # CACHES
